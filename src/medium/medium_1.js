@@ -52,16 +52,18 @@ export function getMedian(array) {
  }
  */
 export function getStatistics(array) {
+	let sum = getSum(array);
+	let maxMin = maxAndMin(array);
+	let mean = sum / array.length;
+
 	return {
 		length: array.length,
-		sum: getSum(array),
-		mean: getSum(array) / array.length,
+		sum: sum,
+		mean: mean,
 		median: getMedian(array),
-		min: maxAndMin(array)['min'],
-		max: maxAndMin(array)['max'],
-		variance: getVariance(array, getSum(array) / array.length),
-		standard_deviation: Math.sqrt(
-			getVariance(array, getSum(array) / array.length),
-		),
+		min: maxMin['min'],
+		max: maxMin['max'],
+		variance: getVariance(array, mean),
+		standard_deviation: Math.sqrt(getVariance(array, mean)),
 	};
 }
