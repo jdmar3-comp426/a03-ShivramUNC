@@ -1,12 +1,11 @@
-import mpg_data from "./data/mpg_data.js";
-import {getStatistics} from "./medium_1.js";
+import mpg_data from './data/mpg_data.js';
+import { getStatistics } from './medium_1.js';
 
 /*
 This section can be done by using the array prototype functions.
 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array
 see under the methods section
 */
-
 
 /**
  * This object contains data that has to do with every car in the `mpg_data` object.
@@ -20,11 +19,55 @@ see under the methods section
  * @param {allCarStats.ratioHybrids} ratio of cars that are hybrids
  */
 export const allCarStats = {
-    avgMpg: undefined,
-    allYearStats: undefined,
-    ratioHybrids: undefined,
+	avgMpg:
+		mpg_data
+			.map((a) => a['city_mpg'] + a['highway_mpg'])
+			.reduce((a, b) => a + b) /
+		(2 * mpg_data.length),
+	allYearStats: getStatistics(mpg_data.map((a) => a['year'])),
+	ratioHybrids: mpg_data.filter((a) => a['hybrid']).length / mpg_data.length,
 };
 
+let object = {};
+let dict = mpg_data
+	.filter((a) => a['hybrid'])
+	.map((a) => {
+		object[a.make] = object[a.make] || { make: a.make, hybrids: [] };
+		object[a.make].hybrids.push(a.id);
+		return object[a.make];
+	})
+	.filter((value, index, self) => self.indexOf(value) === index)
+	.sort((a, b) => b.hybrids.length - a.hybrids.length);
+
+let dict2 = {};
+let second = mpg_data.map((a) => {
+	let y = a.year;
+	dict2[y] = dict2[y] || {
+		hybrid: { city: [], highway: [] },
+		notHybrid: { city: [], highway: [] },
+	};
+	if (a.hybrid) {
+		dict2[y].hybrid.city.push(a.city_mpg);
+		dict2[y].hybrid.highway.push(a.highway_mpg);
+	} else {
+		dict2[y].notHybrid.city.push(a.city_mpg);
+		dict2[y].notHybrid.highway.push(a.highway_mpg);
+	}
+});
+
+let years = Object.keys(dict2);
+for (let yearIndex in years) {
+	let year = dict2[years[yearIndex]];
+
+	year.hybrid = {
+		city: getStatistics(year.hybrid.city).mean,
+		highway: getStatistics(year.hybrid.highway).mean,
+	};
+	year.notHybrid = {
+		city: getStatistics(year.notHybrid.city).mean,
+		highway: getStatistics(year.notHybrid.highway).mean,
+	};
+}
 
 /**
  * HINT: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce
@@ -84,6 +127,6 @@ export const allCarStats = {
  * }
  */
 export const moreStats = {
-    makerHybrids: undefined,
-    avgMpgByYearAndHybrid: undefined
+	makerHybrids: dict,
+	avgMpgByYearAndHybrid: dict2,
 };
