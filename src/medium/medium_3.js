@@ -23,8 +23,6 @@ export function searchHighPower(car_data, minHorsepower, minTorque) {
 		.sort((a, b) => b.horsepower - a.horsepower);
 }
 
-console.log(searchHighPower(mpg_data));
-
 /**
  * @param {array} car_data
  * @param minCity
