@@ -25,12 +25,15 @@ export function getMedian(array) {
 	let array2 = array.sort();
 	let n = array.length;
 
+	return array;
 	if (n % 2 === 0) {
 		return (array2[n / 2 - 1] + array2[n / 2]) / 2;
 	} else {
 		return array2[Math.floor((n - 1) / 2)];
 	}
 }
+
+console.log(getMedian([3, 2, 7]));
 
 /**
  * Calculates statistics (see below) on an array of numbers.
